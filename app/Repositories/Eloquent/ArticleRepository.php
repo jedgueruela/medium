@@ -3,15 +3,19 @@
 namespace App\Repositories\Eloquent;
 
 use App\Article;
+use App\Tag;
 use Illuminate\Http\Request;
 
 class ArticleRepository
 {
 	protected $articles;
 
-	public function __construct(Article $articles)
+	protected $tags;
+
+	public function __construct(Article $articles, Tag $tags)
 	{
 		$this->articles = $articles;
+		$this->tags = $tags;
 	}
 
 	public function all()
@@ -19,13 +23,49 @@ class ArticleRepository
 		return $this->articles->paginate(10);
 	}
 
-	public function destroy($id)
+	public function find($id)
 	{
-		return $this->articles->findOrFail($id)->delete();
+		$article = $this->articles->findOrFail($id);
+
+		return $article;
 	}
 
 	public function save(Request $request)
 	{
 		$article = $this->articles->create($request->all());
+
+		$this->syncTags($article, $request->input('tags', []));
+
+		return $article;
 	}
+
+	public function update(Request $request, $id)
+	{
+		$article = $this->find($id);
+
+		$article->update($request->all());
+
+		$this->syncTags($article, $request->input('tags', []));
+
+		return $article;
+	}
+
+	public function destroy($id)
+	{
+		return $this->articles->findOrFail($id)->delete();
+	}
+
+	private function syncTags($article, array $tagList)
+    {
+        $tags = [];
+
+        foreach($tagList as $tag)
+        {
+            $tag = $this->tags->firstOrCreate(['name' => $tag]);
+
+            $tags[] = $tag->id;
+        }
+
+        $article->tags()->sync($tags);
+    }
 }

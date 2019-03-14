@@ -23,4 +23,11 @@ class Article extends Model
     {
     	return $this->belongsToMany(Tag::class);
     }
+
+    public function tagList()
+	{
+		return $this->tags()
+			->pluck('name')
+			->toArray();
+	}
 }

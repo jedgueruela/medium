@@ -1,8 +1,10 @@
 /node_modules
+/public/assets
 /public/hot
+/public/js
 /public/storage
 /public/vendor
-/public/assets
+/public/photos
 /storage/*.key
 /vendor
 .env

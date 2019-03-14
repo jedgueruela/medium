@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Repositories\Eloquent\ArticleRepository;
 
 class ArticlesController extends Controller
@@ -26,17 +25,37 @@ class ArticlesController extends Controller
         return view('admin.articles.create');
     }
 
-    public function store(Request $request)
+    public function store()
     {
-        $this->validate($request, [
+        request()->validate([
             'title' => 'required',
             'body' => 'required',
-            'thumbnail_path' => 'image',
         ]);
 
-        $this->articles->save($request);
+        $article = $this->articles->save(request());
 
-        return back()->with('successMsg', 'Article has been saved.');
+        return redirect()
+            ->route('articles.edit', ['id' => $article->id])
+            ->with('successMsg', 'Article has been saved.');
+    }
+
+    public function edit($id)
+    {
+        $article = $this->articles->find($id);
+
+        return view('admin.articles.edit', compact('article', 'currentTags'));
+    }
+
+    public function update($id)
+    {
+        request()->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+
+        $this->articles->update(request(), $id);
+
+        return back()->with('successMsg', 'Article has been updated.');
     }
 
     public function destroy($id)
