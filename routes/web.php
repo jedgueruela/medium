@@ -7,7 +7,5 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/laravel-filemanager', '\UniSharp\LaravelFilemanager\Controllers\LfmController@show');
 	Route::post('/laravel-filemanager/upload', '\UniSharp\LaravelFilemanager\Controllers\UploadController@upload');
 
-	Route::group(['prefix' => 'admin'], function () {
-		Route::resource('articles', 'ArticlesController');
-	});	
+	Route::resource('articles', 'ArticlesController');
 });

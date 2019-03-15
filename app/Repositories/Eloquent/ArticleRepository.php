@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Article;
 use App\Tag;
 use Illuminate\Http\Request;
+use Image;
 
 class ArticleRepository
 {
@@ -32,9 +33,13 @@ class ArticleRepository
 
 	public function save(Request $request)
 	{
-		$article = $this->articles->create($request->all());
+		$article = $this->articles->create($request->only(['title', 'body']));
 
 		$this->syncTags($article, $request->input('tags', []));
+
+		if ($request->hasFile('image')) {
+			$article->saveImage($request->image);
+		}
 
 		return $article;
 	}

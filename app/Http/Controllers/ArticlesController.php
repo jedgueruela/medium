@@ -17,12 +17,17 @@ class ArticlesController extends Controller
     {
     	$articles = $this->articles->all();
 
-    	return view('admin.articles.index', compact('articles'));
+    	return view('articles.index', compact('articles'));
     }
 
     public function create()
     {
-        return view('admin.articles.create');
+        return view('articles.create');
+    }
+
+    public function show($id)
+    {
+        
     }
 
     public function store()
@@ -30,6 +35,7 @@ class ArticlesController extends Controller
         request()->validate([
             'title' => 'required',
             'body' => 'required',
+            'image' => 'mimes:jpeg,bmp,png'
         ]);
 
         $article = $this->articles->save(request());
@@ -43,7 +49,7 @@ class ArticlesController extends Controller
     {
         $article = $this->articles->find($id);
 
-        return view('admin.articles.edit', compact('article', 'currentTags'));
+        return view('articles.edit', compact('article', 'currentTags'));
     }
 
     public function update($id)
