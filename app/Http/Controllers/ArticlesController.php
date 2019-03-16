@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Eloquent\ArticleRepository;
+use App\Jobs\UploadArticleImage;
+use App\Jobs\DeleteArticleImageDirectory;
 
 class ArticlesController extends Controller
 {
@@ -11,23 +13,25 @@ class ArticlesController extends Controller
     public function __construct(ArticleRepository $articles)
     {
     	$this->articles = $articles;
+
+        $this->middleware('auth')->except('show');
     }
 
     public function index()
     {
-    	$articles = $this->articles->all();
+    	$articles = $this->articles->paginate();
 
     	return view('articles.index', compact('articles'));
-    }
-
-    public function create()
-    {
-        return view('articles.create');
     }
 
     public function show($id)
     {
         
+    }
+
+    public function create()
+    {
+        return view('articles.create');
     }
 
     public function store()
@@ -39,6 +43,10 @@ class ArticlesController extends Controller
         ]);
 
         $article = $this->articles->save(request());
+
+        if (request()->hasFile('image')) {
+            UploadArticleImage::dispatch(request()->image, $article);
+        }
 
         return redirect()
             ->route('articles.edit', ['id' => $article->id])
@@ -57,16 +65,25 @@ class ArticlesController extends Controller
         request()->validate([
             'title' => 'required',
             'body' => 'required',
+            'image' => 'mimes:jpeg,bmp,png'
         ]);
 
-        $this->articles->update(request(), $id);
+        $article = $this->articles->update(request(), $id);
+
+        if (request()->hasFile('image')) {
+            UploadArticleImage::dispatch(request()->image, $article);
+        }
 
         return back()->with('successMsg', 'Article has been updated.');
     }
 
     public function destroy($id)
     {
-        $this->articles->destroy($id);
+        $article = $this->articles->find($id);
+
+        DeleteArticleImageDirectory::dispatch($article->imageDir());
+
+        $this->articles->delete($article);
 
         return back()->with('successMsg', 'Article has been deleted.');
     }

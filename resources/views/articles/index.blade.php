@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
 	<div class="clearfix mb-8">
@@ -11,13 +11,13 @@
 				<h3 class="mb-2"><a class="text-grey-darkest no-underline hover:underline" href="{{ route('articles.show', [$article->id]) }}">{{ $article->title }}</a></h3>
 				<a href="{{ route('articles.edit', [$article->id]) }}">Edit</a>
 				<form class="inline-block" onsubmit="return confirm('Are you sure you want to delete this article?')" action="{{ route('articles.destroy', [$article->id]) }}" method="post">
-					{{ csrf_field() }}
+					@csrf
 					<input type="hidden" name="_method" value="DELETE">
 					<button type="submit">Delete</button>
 				</form>
 			</div>
 		@endforeach
-		{{ $articles->links() }}
+		{{ $articles->links('pagination') }}
 	@else
 		<p>No article found.</p>
 	@endif

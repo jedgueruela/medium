@@ -19,9 +19,9 @@ class ArticleRepository
 		$this->tags = $tags;
 	}
 
-	public function all()
+	public function paginate($noOfItems = 10)
 	{
-		return $this->articles->paginate(10);
+		return $this->articles->paginate($noOfItems);
 	}
 
 	public function find($id)
@@ -37,10 +37,6 @@ class ArticleRepository
 
 		$this->syncTags($article, $request->input('tags', []));
 
-		if ($request->hasFile('image')) {
-			$article->saveImage($request->image);
-		}
-
 		return $article;
 	}
 
@@ -55,9 +51,9 @@ class ArticleRepository
 		return $article;
 	}
 
-	public function destroy($id)
+	public function delete(Article $article)
 	{
-		return $this->articles->findOrFail($id)->delete();
+		return $article->delete();
 	}
 
 	private function syncTags($article, array $tagList)

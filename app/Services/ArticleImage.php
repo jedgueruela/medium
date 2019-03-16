@@ -12,11 +12,10 @@ class ArticleImage
 	{
 		File::exists($directory) or File::makeDirectory($directory, 0777, true);
 
-		$extension = $image->getClientOriginalExtension();
-
 		$image = Image::make($image->getRealPath());
-		$image->save($directory . 'full.' . $extension)
-			  ->crop(300, 300)
-			  ->save($directory . 'thumbnail.' . $extension);
+		$image->save($directory . 'full.jpg')
+			->resize(360, null, function ($constraint) {
+			    $constraint->aspectRatio();
+			})->save($directory . 'thumbnail.jpg');
 	}
 }
