@@ -1,4 +1,5 @@
 import Homepage from '../pages/index.vue';
+import Article from '../pages/article.vue';
 
 const routes = [
     {
@@ -6,12 +7,12 @@ const routes = [
         path: '/',
         component: Homepage
     },
-    // {
-    //     name: 'article',
-    //     path: '/portfolio/:slug',
-    //     component: Article,
-    //     props: true 
-    // },
+    {
+        name: 'article',
+        path: '/article/:slug',
+        component: Article,
+        props: true 
+    },
 ];
 
 export default routes;

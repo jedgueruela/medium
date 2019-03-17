@@ -13,8 +13,6 @@ class ArticlesController extends Controller
     public function __construct(ArticleRepository $articles)
     {
     	$this->articles = $articles;
-
-        $this->middleware('auth')->except('show');
     }
 
     public function index()
@@ -22,11 +20,6 @@ class ArticlesController extends Controller
     	$articles = $this->articles->paginate();
 
     	return view('articles.index', compact('articles'));
-    }
-
-    public function show($id)
-    {
-        
     }
 
     public function create()

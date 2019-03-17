@@ -20,6 +20,6 @@ $factory->define(Article::class, function (Faker $faker) {
     return [
         'title' => $title,
         'slug' => Str::slug($title),
-        'body' => $faker->paragraph,
+        'body' => $faker->paragraph(10),
     ];
 });

@@ -34,6 +34,9 @@
 		<div class="input-group">
 			<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="image">Featured Image</label>
 		   	<input id="image" class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-grey" type="file" name="image">
+		   	@if ($article->hasThumbnailImage())
+				<img src="{{ $article->thumbnailImageUri() }}" alt="{{ $article->title }}" class="max-w-full h-auto block">
+		   	@endif
 		</div>
 		
 		<button class="no-underline uppercase bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4" type="submit">Save</button>

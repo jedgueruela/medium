@@ -21,7 +21,7 @@ class ArticleRepository
 
 	public function paginate($noOfItems = 10)
 	{
-		return $this->articles->paginate($noOfItems);
+		return $this->articles->latest()->paginate($noOfItems);
 	}
 
 	public function find($id)
@@ -29,6 +29,11 @@ class ArticleRepository
 		$article = $this->articles->findOrFail($id);
 
 		return $article;
+	}
+
+	public function findBySlug($slug)
+	{
+		return $this->articles->whereSlug($slug)->firstOrFail();
 	}
 
 	public function save(Request $request)

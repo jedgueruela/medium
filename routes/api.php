@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 Route::group(['namespace' => 'Api'], function() {
     Route::resource('articles', 'ArticlesController', [
-        'only' => 'index'
+        'only' => ['index', 'show']
     ]);
 
     Route::resource('tags', 'TagsController', [

@@ -7,6 +7,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Http\UploadedFile;
 use App\Article;
 use App\Services\ArticleImage;
+use Image;
+use File;
 
 class UploadArticleImage
 {
@@ -34,6 +36,14 @@ class UploadArticleImage
      */
     public function handle()
     {
-        ArticleImage::save($this->image, $this->article->imageDir());
+        $directory = $this->article->imageDir();
+
+        File::exists($directory) or File::makeDirectory($directory, 0777, true);
+
+        $image = Image::make($this->image->getRealPath());
+        $image->save($directory . 'full.jpg')
+            ->resize(400, null, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save($directory . 'thumbnail.jpg');
     }
 }

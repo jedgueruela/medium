@@ -2,21 +2,19 @@
 	<div>
 		<div class="flex justify-center my-8">
 			<div class="w-1/2">
-				<div v-for="(article, index) in list" :key="index" class="max-w-md w-full lg:flex mb-8">
-					<div class="h-48 lg:h-auto lg:w-48 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" style="background-image: url('https://tailwindcss.com/img/card-left.jpg')" title="Woman holding a mug">
-					</div>
-					<div class="border-r border-b border-l border-grey-light lg:border-l-0 lg:border-t lg:border-grey-light bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
-						<div class="mb-8">
-							<div class="text-black font-bold text-xl mb-2">Can coffee make you a better developer?</div>
-							<p class="text-grey-darker text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.</p>
-						</div>
-						<div class="flex items-center">
-							<span class="inline-block bg-grey-lighter rounded-full px-3 py-1 text-sm font-semibold text-grey-darker mr-2">#photography</span>
-							<span class="inline-block bg-grey-lighter rounded-full px-3 py-1 text-sm font-semibold text-grey-darker mr-2">#travel</span>
-							<span class="inline-block bg-grey-lighter rounded-full px-3 py-1 text-sm font-semibold text-grey-darker">#winter</span>
-						</div>
-					</div>
-				</div>
+				<article v-for="(article, index) in articles" :key="index" class="max-w-sm mx-auto rounded overflow-hidden shadow-lg mb-8">
+					<router-link :to="{ name: 'article', params: { slug: article.slug } }">
+    					<img class="w-full" :src="article.thumbnail_image" :alt="article.title">
+    				</router-link>
+				  	<div class="px-6 py-4">
+				    	<div class="font-bold text-xl mb-2">{{ article.title }}</div>
+					    <p class="text-grey-darker text-base">{{ article.excerpt }}</p>
+				  	</div>
+				  	<div class="px-6 py-4">
+				  		Tags: 
+				    	<span v-for="tag in article.tags" class="inline-block bg-grey-lighter rounded-full px-3 py-1 text-sm font-semibold text-grey-darker mr-2">{{ tag }}</span>
+				  	</div>
+				</article>
 			</div>
 		</div>
 		<infinite-loading @infinite="infiniteHandler"></infinite-loading>
@@ -27,13 +25,11 @@
 	import axios from 'axios';
 	import InfiniteLoading from "vue-infinite-loading";
 
-	const api = '/api/articles';
-
 	export default {
 		data() {
 			return {
 				page: 1,
-				list: [],
+				articles: [],
 			};
 		},
 
@@ -43,14 +39,15 @@
 
 		methods: {
 			infiniteHandler($state) {
-				axios.get(api, {
+				axios.get('/api/articles', {
 					params: {
 						page: this.page,
 					},
-				}).then(({ data }) => {
-					if (data.hits.length) {
+				}).then(collection => {
+					console.log(collection)
+					if (collection.data.length) {
 						this.page += 1;
-						this.list.push(...data.hits);
+						this.articles.push(...collection.data);
 						$state.loaded();
 					} else {
 						$state.complete();

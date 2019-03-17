@@ -16,8 +16,34 @@ class ArticlesController extends Controller
 
     public function index()
 	{
+		$data = [];
+
 		$articles = $this->articles->paginate();
 
-		return response()->json($articles, 200);
+		if (! $articles->isEmpty()) {
+			foreach ($articles as $article) {
+				$data[] = [
+					'title' => $article->title,
+					'excerpt' => $article->excerpt,
+					'slug' => $article->slug,
+					'thumbnail_image' => $article->thumbnailImage(),
+					'tags' => $article->tagList()
+				];
+			}
+		}
+
+		return response()->json($data, 200);
+	}
+
+	public function show($slug)
+	{
+		$article = $this->articles->findBySlug($slug);
+
+		return response()->json([
+			'title' => $article->title,
+			'body' => $article->body,
+			'featured_image' => $article->fullImage(),
+			'tags' => $article->tagList()
+		], 200);
 	}
 }

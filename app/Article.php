@@ -5,9 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use App\Tag;
+use App\Traits\Image;
 
 class Article extends Model
 {
+	use Image;
+
 	protected $fillable = ['title', 'slug', 'body'];
 
 	public static function boot()
@@ -24,6 +27,11 @@ class Article extends Model
     	return $this->belongsToMany(Tag::class);
     }
 
+    public function getExcerptAttribute()
+    {
+        return strip_tags(Str::words($this->body, 40, '...'));
+    }
+
     public function tagList()
 	{
 		return $this->tags()
@@ -31,8 +39,8 @@ class Article extends Model
 			->toArray();
 	}
 
-	public function imageDir()
+	public function imageBaseUri()
 	{
-		return article_image_path($this->id);
+		return '/photos/articles/' . $this->id . '/';
 	}
 }
