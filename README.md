@@ -48,10 +48,10 @@ $ php -S localhost:9000 -t public
 
 ## Using the application
 
-### To login to the admin dashboard
+### To login to the admin dashboard, use the following credentials:
 
-sample@email.com
-password
+email: sample@email.com  
+password: password
 
 ## Testing
 
