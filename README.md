@@ -39,7 +39,7 @@ $ npm run dev
 
 ### Serving the application
 ```
-$ php artisan serve
+$ php artisan serve --port=9000
 ```
 or
 ```
