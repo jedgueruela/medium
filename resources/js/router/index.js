@@ -4,5 +4,4 @@ import routes from './routes';
 export default new VueRouter({
 	routes,
 	linkActiveClass: 'active',
-	mode: 'history',
 });
